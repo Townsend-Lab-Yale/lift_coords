@@ -21,10 +21,13 @@ def copy_initial_data():
         'hg38_to_GRCh38.chain.gz',
         'hg38_to_hg19.chain.gz',
     ]:
-        new_path = pathlib.Path(paths.CHAIN_DIR).joinpath(file_name)
+        out_name = os.path.splitext(file_name)[0]
+        new_path = pathlib.Path(paths.CHAIN_DIR).joinpath(out_name)
         if not new_path.exists():
             added_data.append(file_name)
-            with resources.path('lift_coords.refs.data', file_name) as path:
-                shutil.copy(path, new_path)
+            with resources.path('lift_coords.data', file_name) as gz_path:
+                with gzip.open(gz_path, 'rb') as gz:
+                    with open(out_path, 'wb') as out:
+                        shutil.copyfileobj(gz, out)
     if added_data:
         _logger.info(f"Copied reference data to {paths.DATA_ROOT}: {added_data}.")
