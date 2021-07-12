@@ -1,0 +1,9 @@
+name: lift
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - pip
+  - python=3
+  - pandas
+  - appdirs

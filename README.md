@@ -1,11 +1,6 @@
 # lift_coords
 
-Add a short description here!
-
-
-## Description
-
-A longer description of your project goes here...
+A basic Python wrapper for LiftOver.
 
 
 <!-- pyscaffold-notes -->
