@@ -1,7 +1,8 @@
-import logging
 import os
+import gzip
 import shutil
 import pathlib
+import logging
 from importlib import resources
 
 from . import paths
@@ -27,7 +28,7 @@ def copy_initial_data():
             added_data.append(file_name)
             with resources.path('lift_coords.data', file_name) as gz_path:
                 with gzip.open(gz_path, 'rb') as gz:
-                    with open(out_path, 'wb') as out:
+                    with open(new_path, 'wb') as out:
                         shutil.copyfileobj(gz, out)
     if added_data:
         _logger.info(f"Copied reference data to {paths.DATA_ROOT}: {added_data}.")
