@@ -7,3 +7,5 @@ dependencies:
   - python=3
   - pandas
   - appdirs
+  - pytest
+  - sphinx
