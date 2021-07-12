@@ -2,6 +2,17 @@
 
 A basic Python wrapper for LiftOver.
 
+## Usage
+
+import lift_coords
+df2, failed = lift_coords.lift_over(df, 'grch38', 'grch37', keep_orig=True)
+
+## Installation
+
+```bash
+pip install -e git+https://github.com/Townsend-Lab-Yale/lift_coords.git
+```
+
 
 <!-- pyscaffold-notes -->
 
