@@ -7,6 +7,7 @@ from datetime import datetime
 import pandas as pd
 
 from . import paths
+from .admin import copy_initial_data
 
 
 __author__ = 'Stephen Gaffney'
@@ -161,3 +162,6 @@ def _match_column_str(val=None, df=None):
         return matches[0]
     else:
         return None
+
+
+copy_initial_data()
