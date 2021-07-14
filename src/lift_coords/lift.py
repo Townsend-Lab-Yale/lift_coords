@@ -40,7 +40,8 @@ _CHAIN_LISTS = {
 }
 
 
-def lift_over(df, build_in: str, build_out: str, keep_orig=False):
+def lift_over(df, build_in: str, build_out: str, keep_orig=False,
+              keep_intermediate=False):
     """Lift table of site info from one build to another.
 
     Args:
@@ -48,7 +49,7 @@ def lift_over(df, build_in: str, build_out: str, keep_orig=False):
         build_in: Name of input build. See VALID_BUILDS for options.
         build_out: Name of output build.
         keep_orig (bool): whether to keep initial coordinate columns as {col}_orig.
-
+        keep_intermediate (bool): whether to keep intermediate liftOver bed files.
     Returns:
         new_table (pd.DataFrame), inds_unlifted
     """
@@ -75,7 +76,7 @@ def _prettify_build_str(build: str) -> str:
 
 
 def _lift_with_chains(df, keep_orig=False, chain_list=None,
-                      new_build_name=None):
+                      new_build_name=None, keep_intermediate=False):
     """Lift in two steps, using two chain files (chain1, and chain2).
 
     Args:
@@ -117,6 +118,11 @@ def _lift_with_chains(df, keep_orig=False, chain_list=None,
                     names=[chr_col, start_col, end_col, 'ind'])
     n.Start_Position += 1
     n.set_index('ind', inplace=True)
+
+    if not keep_intermediate:
+        _logger.info('Cleaning up intermediate files.')
+        for path in out_paths + unlift_paths + [bed_path]:
+            os.remove(path)
 
     df2 = df_orig.join(n, how='left', lsuffix='_orig')
 
