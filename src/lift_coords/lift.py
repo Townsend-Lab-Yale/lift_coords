@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import shlex
 import logging
 import subprocess
 from datetime import datetime
@@ -146,7 +147,7 @@ def _lift_with_chains(df, keep_orig=False, chain_list=None,
 
 
 def _lift_bed(bed_in_path, chain_path=None, out_dir=None):
-    """Lifts ."""
+    """Lifts bed file using provided chain."""
 
     if not chain_path:
         raise Exception("chain_path required.")
@@ -157,19 +158,23 @@ def _lift_bed(bed_in_path, chain_path=None, out_dir=None):
     # if n_pos != len(start_pos) != len(end_pos):
     #     raise Exception("Parameters must have same length.")
     now_str = datetime.isoformat(datetime.now())
-    out_path = os.path.join(out_dir, 'lift_' + now_str + '_out')
-    unlifted_path = os.path.join(out_dir, 'lift_' + now_str + '_unlifted')
+    out_path = os.path.join(out_dir, f'lift_{now_str}_out')
+    unlifted_path = os.path.join(out_dir, f'lift_{now_str}_unlifted')
 
     # liftOver oldFile map.chain newFile unMapped
     cmd = ['liftOver', bed_in_path, chain_path, out_path, unlifted_path]
-    with open(os.devnull, "r") as fnullin:
-        with open(os.devnull, "w") as outfile:
-            subprocess.check_call(cmd, stdout=outfile, stderr=subprocess.STDOUT,
-                                  stdin=fnullin)
-            # subprocess.check_call(cmd,stdout=outfile,stdin=fnullin)
-            # proc = subprocess.Popen(cmd,stdout=outfile,stdin=fnullin)
-            # (a,b)=proc.communicate()
+    _logger.info(f"Running {' '.join(shlex.quote(arg) for arg in cmd)}")
 
+    with open(os.devnull, "r") as fnullin:
+        with subprocess.Popen(cmd, stdin=fnullin, stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE,
+                              universal_newlines=True) as p:
+            for line in p.stdout:
+                msg = line.rstrip('\n')
+                _logger.info(f"LIFTOVER: {msg}")
+            for line in p.stderr:
+                msg = line.rstrip('\n')
+                _logger.error(f"LIFTOVER: {msg}")
     return out_path, unlifted_path
 
 
