@@ -55,10 +55,11 @@ def lift_over(df, build_in: str, build_out: str, keep_orig=False,
     """
     if build_in not in VALID_BUILDS or build_out not in VALID_BUILDS:
         raise BuildArgumentException(f"Build must be one of {VALID_BUILDS}.")
-    new_table, inds_unlifted = _lift_with_chains(
+    new_table, unlifted = _lift_with_chains(
         df, keep_orig=keep_orig,
-        chain_list=_CHAIN_LISTS[(build_in, build_out)], new_build_name='GRCh37')
-    return new_table, inds_unlifted
+        chain_list=_CHAIN_LISTS[(build_in, build_out)], new_build_name='GRCh37',
+        keep_intermediate=keep_intermediate)
+    return new_table, unlifted
 
 
 def _prettify_build_str(build: str) -> str:
@@ -126,9 +127,8 @@ def _lift_with_chains(df, keep_orig=False, chain_list=None,
 
     df2 = df_orig.join(n, how='left', lsuffix='_orig')
 
-    inds_unlifted = df2[df2.Start_Position.isnull()].index.values
-    n_unlifted = len(inds_unlifted)
-    _logger.info('%s rows failed liftover.', n_unlifted)
+    unlifted = df_orig[df2.Start_Position.isnull()]
+    _logger.info(f'{len(unlifted)} rows failed liftover.')
 
     df2.dropna(axis=0, how='any', subset=[start_col, end_col], inplace=True)
     df2[start_col] = df2[start_col].astype(int)
@@ -144,12 +144,8 @@ def _lift_with_chains(df, keep_orig=False, chain_list=None,
                 df2[build_col] = new_build_name
             df2.drop([i + '_orig' for i in [chr_col, start_col, end_col]], axis=1,
                      inplace=True)
-    # CLEAN UP TEMP FILES
-    # os.remove(bed_path)
-    # for path in [unlift_path1, unlift_path2, out_path, out2_path]:
-    #     os.remove(os.path.join(out_dir, path))
 
-    return df2, inds_unlifted
+    return df2, unlifted
 
 
 def _lift_bed(bed_in_path, chain_path=None, out_dir=None):
