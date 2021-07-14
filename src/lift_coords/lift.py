@@ -13,18 +13,29 @@ from .admin import copy_initial_data
 __author__ = 'Stephen Gaffney'
 _logger = logging.getLogger(__name__)
 VALID_BUILDS = frozenset(['grch37', 'grch38', 'hg19', 'hg38'])
-_CHAIN_HG38_HG19 = 'hg38_to_hg19.chain'
-_CHAIN_37_HG38 = 'GRCh37_to_hg38.chain'
-_CHAIN_37_HG19 = 'GRCh37ToHg19.chain'
 _CHAIN_HG19_37 = 'hg19_to_GRCh37.chain'
-_CHAIN_38_37 = 'GRCh38_to_GRCh37.chain'
+_CHAIN_HG19_HG38 = 'hg19_to_hg38.chain.gz'
+_CHAIN_HG38_HG19 = 'hg38_to_hg19.chain'
+_CHAIN_HG38_38 = 'hg38_to_GRCh38.chain'
+_CHAIN_37_HG38 = 'GRCh37_to_hg38.chain'
+_CHAIN_37_HG19 = 'GRCh37_to_hg19.chain'
 _CHAIN_37_38 = 'GRCh37_to_GRCh38.chain'
+_CHAIN_38_37 = 'GRCh38_to_GRCh37.chain'
+_CHAIN_38_HG38 = 'GRCh38_to_hg38.chain'
 
 _CHAIN_LISTS = {
-    ('hg38', 'grch37'): [_CHAIN_HG38_HG19, _CHAIN_HG19_37],
-    ('grch37', 'hg19'): [_CHAIN_37_HG19],
-    ('grch38', 'grch37'): [_CHAIN_38_37],
     ('grch37', 'grch38'): [_CHAIN_37_38],
+    ('grch37', 'hg19'): [_CHAIN_37_HG19],
+    ('grch37', 'hg38'): [_CHAIN_37_HG38],
+    ('grch38', 'grch37'): [_CHAIN_38_37],
+    ('grch38', 'hg19'): [_CHAIN_38_37, _CHAIN_37_HG19],
+    ('grch38', 'hg38'): [_CHAIN_38_HG38],
+    ('hg19', 'grch37'): [_CHAIN_HG19_37],
+    ('hg19', 'grch38'): [_CHAIN_HG19_HG38, _CHAIN_HG38_38],
+    ('hg19', 'hg38'): [_CHAIN_HG19_HG38],
+    ('hg38', 'grch37'): [_CHAIN_HG38_HG19, _CHAIN_HG19_37],
+    ('hg38', 'grch38'): [_CHAIN_HG38_38],
+    ('hg38', 'hg19'): [_CHAIN_HG38_HG19],
 }
 
 
