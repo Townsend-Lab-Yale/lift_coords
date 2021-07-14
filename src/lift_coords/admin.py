@@ -17,6 +17,7 @@ def copy_initial_data():
         'GRCh37_to_GRCh38.chain.gz',
         'GRCh37_to_hg38.chain.gz',
         'GRCh38_to_GRCh37.chain.gz',
+        'GRCh38_to_hg38.chain.gz',
         'hg19_to_GRCh37.chain.gz',
         'hg19_to_hg38.chain.gz',
         'hg38_to_GRCh38.chain.gz',
